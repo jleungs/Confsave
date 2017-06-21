@@ -39,7 +39,7 @@ def telnet():
         exit()
 
     prompt = child.expect(['Press any key to continue',
-                           'Username:', 'Password', r'.*\>', r'.*\#'], 3)
+                           'Username:', 'Password', '.*\>', '.*\#'], 3)
     print("Success! Getting config via Telnet.. ")
     while prompt is not 4:
 			# While not the prompt is in priveleged mode, it tries to find it
@@ -56,24 +56,24 @@ def telnet():
             if prompt == 0:
                 child.sendline('')
                 prompt = child.expect(['Press any key to continue',
-                                       'Username:', 'Password', r'.*\>', r'.*\#'], 3)
+                                       'Username:', 'Password', '.*\>', '.*\#'], 3)
             elif prompt == 1:
                 child.sendline(USERNAME)
                 prompt = child.expect(['Press any key to continue',
-                                       'Username:', 'Password', r'.*\>', r'.*\#'], 3)
+                                       'Username:', 'Password', '.*\>', '.*\#'], 3)
             elif prompt == 2:
                 child.sendline(PASSWORD)
                 prompt = child.expect(['Press any key to continue',
-                                       'Username:', 'Password', r'.*\>', r'.*\#'], 3)
+                                       'Username:', 'Password', '.*\>', '.*\#'], 3)
             elif prompt == 3:
                 child.sendline('en')
                 prompt = child.expect(['Press any key to continue',
-                                       'Username:', 'Password', r'.*\>', r'.*\#'], 3)
+                                       'Username:', 'Password', '.*\>', '.*\#'], 3)
     child.sendline("sh run")
-    moretest = child.expect([r'.*\#', r'\ --More--\ '], 3)
+    moretest = child.expect(['.*\#', '\ --More--\ '], 3)
     while moretest == 1:
         child.send(' ')
-        moretest = child.expect([r'.*\#', r'\ --More--\ '], 3)
+        moretest = child.expect(['.*\#', '\ --More--\ '], 3)
     with open(".templog", "r") as f:
         log_file = f.read()
         f.close()
