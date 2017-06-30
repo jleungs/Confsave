@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # ^ Change to whatever your python 3.5 is named
 
 import os
@@ -10,19 +10,16 @@ import pexpect
 
 def devices():
     inf = {
-        'device_type': 'cisco_ios',
+        'device_type': DEVICE,
         'ip': IP_ADDRESS,
         'username': USERNAME,
         'password': PASSWORD,
         'secret': ENABLE_PASSWORD}
     return inf
 
-def writefile(con, output):
+def writefile(output):
     date = datetime.now().strftime("%Y-%m-%d_%H:%M")
-    if con is not None:
-        filename = con.find_prompt()[:-1].strip() + "_"  + date + ".conf"
-    else:
-        filename = IP_ADDRESS + "_" + date + ".conf"
+    filename = IP_ADDRESS + "_" + date + ".conf"
     cdir = os.getcwd()
     with open(filename, 'w') as f:
         f.write(output)
@@ -80,7 +77,7 @@ def telnet():
     log_file = log_file.split('Building configuration...\n')[1]
     log_file = log_file[:log_file.rfind('\n')]
     os.remove('.templog')
-    writefile(None, log_file)
+    writefile(log_file)
 
 def ssh():
     inf = devices()
@@ -94,10 +91,18 @@ def ssh():
         print("Success! Getting config via SSH..")
         net_connect.enable()
         output = net_connect.send_command('sh run')
-        writefile(net_connect, output)
+        writefile(output)
 
 if __name__ == '__main__':
     sys.tracebacklimit = None
+    DEVICE = input("IOS(1)\nASA(2)\nChoose device type(1/2): ")
+    if DEVICE == "1":
+        DEVICE = 'cisco_ios'
+    elif DEVICE == "2":
+        DEVICE = 'cisco_asa'
+    else:
+        print("Choose 1 or 2")
+        exit()
     IP_ADDRESS = input("Enter IP address: ")
     USERNAME = input("Enter Username: ")
     PASSWORD = getpass("Enter Password: ")
