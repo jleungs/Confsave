@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # ^ Change to whatever your python 3.5 is named
 
 import os
