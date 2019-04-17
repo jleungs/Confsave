@@ -77,7 +77,7 @@ def telnet():
     log_file = log_file.split('Building configuration...\n')[1]
     log_file = log_file[:log_file.rfind('\n')]
     os.remove('.templog')
-    writefile(log_file)
+    return log_file
 
 def ssh():
     inf = devices()
@@ -86,12 +86,13 @@ def ssh():
         net_connect = netmiko.ConnectHandler(**inf) # Trying SSH first
     except:
         print("Failed to connect via SSH, trying Telnet")
+        return 0
         telnet() # If SSH doesnt work, tries telnet
     else:
         print("Success! Getting config via SSH..")
         net_connect.enable()
         output = net_connect.send_command('sh run')
-        writefile(output)
+        return output
 
 if __name__ == '__main__':
     sys.tracebacklimit = None
@@ -107,4 +108,9 @@ if __name__ == '__main__':
     USERNAME = input("Enter Username: ")
     PASSWORD = getpass("Enter Password: ")
     ENABLE_PASSWORD = getpass("Enter enable password(if none, just hit enter): ")
-    ssh()
+    BUF = ssh()
+    if not BUF:
+        BUF = telnet()
+    writefile(BUF)
+    exit(0)
+
